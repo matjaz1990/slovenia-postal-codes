@@ -1,7 +1,8 @@
 require 'httparty'
 require 'nokogiri'
+require 'byebug'
 
-class Scrapper
+class Scraper
   def initialize
     @urls = [
       "http://www.postnestevilke.com/postne-stevilke-1000-1434.php",
@@ -43,16 +44,17 @@ class Scrapper
   end
 
   def to_csv
-    CSV.generate(headers: true) do
+    CSV.generate(headers: true) do |csv|
       csv << ["name", "postal_code", "country_code"]
 
       @post_offices.each do |po|
-        csv << [po.name, po.code, po.country]
+        csv << [po[:name], po[:code], po[:country]]
       end
     end
   end
 
 end
 
-x = Scraper.new().run
+x = Scraper.new()
+x.run
 File.write('postal_codes_si.csv', x.to_csv)
